@@ -12,18 +12,32 @@ import { userRouter } from "./modules/users/user.routes";
 export const app = express();
 
 app.use(helmet());
-//app.use(cors({ origin: env.CLIENT_URL }));
-app.use(cors({ origin: env.CLIENT_URL.split(",").map((url) => url.trim()) }));
+
+// Combine environment-based origins and your Vercel frontend URL cleanly
+const allowedOrigins = [
+  ...(env.CLIENT_URL ? env.CLIENT_URL.split(",").map((url) => url.trim()) : []),
+  "https://notebook-web-two.vercel.app"
+];
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", time: new Date().toISOString() });
 });
+
 // Routes
 app.use("/api/auth", authRouter);
 app.use("/api/notes", noteRouter);
 app.use("/api/users", userRouter);
 app.use("/api/posts", postRouter);
 app.use("/api/admin", adminRouter);
+
 app.use(notFound);
 app.use(errorHandler);
