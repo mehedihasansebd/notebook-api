@@ -12,7 +12,8 @@ import { userRouter } from "./modules/users/user.routes";
 export const app = express();
 
 app.use(helmet());
-app.use(cors({ origin: env.CLIENT_URL }));
+//app.use(cors({ origin: env.CLIENT_URL }));
+app.use(cors({ origin: env.CLIENT_URL.split(",").map((url) => url.trim()) }));
 app.use(express.json());
 
 app.get("/api/health", (_req, res) => {
