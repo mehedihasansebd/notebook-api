@@ -29,7 +29,9 @@ export async function loginUser(input: LoginInput) {
   // password has select:false, so we ask for it explicitly here
   const user = await UserModel.findOne({ email: input.email }).select("+password");
 
-  const passwordOk = user ? await bcrypt.compare(input.password, user.password) : false;
+  const passwordOk = user
+    ? await bcrypt.compare(input.password, user.password as string)
+    : false;
 
   // same message for "no such user" and "wrong password" on purpose
   if (!user || !passwordOk) {
