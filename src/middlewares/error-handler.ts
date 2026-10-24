@@ -17,7 +17,9 @@ export function errorHandler(err: unknown, _req: Request, res: Response, _next: 
   if (err instanceof AppError) {
     return res.status(err.statusCode).json({ message: err.message });
   }
-
+  if (typeof err === "object" && err !== null && (err as { code?: unknown }).code === 11000) {
+    return res.status(409).json({ message: "This value is already in use" });
+  }
   console.error(err);
   res.status(500).json({ message: "Something went wrong" });
 }

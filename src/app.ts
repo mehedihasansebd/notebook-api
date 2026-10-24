@@ -3,12 +3,14 @@ import express from "express";
 import helmet from "helmet";
 import { env } from "./config/env";
 import { errorHandler, notFound } from "./middlewares/error-handler";
+import { authRouter } from "./modules/auth/auth.routes";
 
 export const app = express();
 
 app.use(helmet());
 app.use(cors({ origin: env.CLIENT_URL }));
 app.use(express.json());
+app.use("/api/auth", authRouter);
 
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", time: new Date().toISOString() });
